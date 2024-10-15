@@ -115,8 +115,8 @@ class mywindow(QtWidgets.QMainWindow):
 
     def calculate(self, fun, *args, **kwargs):
         self.variables.update()
-        # condition = self.table_loader1.valid(self.variables.k, 3)
-        condition = True
+        condition = self.table_loader1.valid(self.variables.n, 3)
+        # condition = True
         if condition:
             self.calculation = Calculation(
                 name=self.variables.name,
