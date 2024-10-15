@@ -186,5 +186,10 @@ class Ui_Form(object):
         self.label_50.setText(_translate("Form", "<html><head/><body><p/></body></html>"))
         self.label_53.setText(_translate("Form", "<html><head/><body><p>S<span style=\" text-decoration: overline; vertical-align:sub;\">d</span><span style=\" vertical-align:sub;\"/></p></body></html>"))
         self.label_51.setText(_translate("Form", "<html><head/><body><p>=</p></body></html>"))
+        self.textEdit.setHtml(_translate("Form", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Times New Roman\'; font-size:14pt; font-weight:600; font-style:normal;\">\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>"))
         self.pushButton.setText(_translate("Form", "ОК"))
         self.pushButton_2.setText(_translate("Form", "Промежуточные расчеты"))
