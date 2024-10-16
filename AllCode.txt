@@ -507,6 +507,7 @@ import pickle
 
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
+from PyQt5.QtWidgets import QLabel
 
 from files.MainWindow import Ui_MainWindow
 from files.ResultWindow import Ui_Form
@@ -572,7 +573,13 @@ class mywindow(QtWidgets.QMainWindow):
             [2022, 48, 55],
             [2023, 52, 59]]
         loader1_block = False
-        loader1_heading_x = lambda iterator: ["", "", ""][iterator]
+        loader1_heading_x = lambda iterator: \
+            [
+                "Годы",
+                f"Урожайность, ц/га\n1сорт, y{get_sub('i')}",
+                f"Урожайность, ц/га\n2сорт, x{get_sub('i')}"
+            ][iterator]
+        loader1_heading_y = lambda iterator: str(iterator + 1)
         loader1_types_matrix = [[int, int, int] for _ in range(loader1_m)]
 
 
@@ -580,6 +587,7 @@ class mywindow(QtWidgets.QMainWindow):
             self, loader1_n, loader1_m, loader1_label,
             block=loader1_block,
             heading_x=loader1_heading_x,
+            heading_y=loader1_heading_y,
             types_matrix=loader1_types_matrix
         )
 
@@ -660,8 +668,7 @@ p, li { white-space: pre-wrap; }
 </style></head><body style=" font-family:'Times New Roman'; font-size:14pt; font-weight:600; font-style:normal;">
 <p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-weight:400;">Проверку гипотезы H</span><span style=" font-weight:400; vertical-align:sub;">0</span><span style=" font-weight:400;"> осуществляют с помощью критерия t-Стьюдента.</span></p>
 <p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-weight:400;">Так как t</span><span style=" font-weight:400; vertical-align:sub;">набл</span><span style=" font-weight:400;"> $symbol t</span><span style=" font-weight:400; vertical-align:sub;">кр</span><span style=" font-weight:400;">, то нулевая гипотеза $res1 </span></p>
-<p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-weight:400;">Следовательно, два сорта $name статистически существенно различаются по уровню урожайности $res2 </span></p>
-<p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-weight:400;">Выдвигаем нулевую гипотезу H</span><span style=" font-weight:400; vertical-align:sub;">0</span><span style=" font-weight:400;"> средняя величина различий в урожайности культуры равна нулю, т.е. Н</span><span style=" font-weight:400; vertical-align:sub;">0</span><span style=" font-weight:400;">: </span><span style=" font-weight:400; font-style:italic; text-decoration: overline;">x-y=0</span><span style=" font-weight:400;"> при H</span><span style=" font-weight:400; vertical-align:sub;">1</span><span style=" font-weight:400;">: </span><span style=" font-weight:400; font-style:italic; text-decoration: overline;">x-y≠0</span><span style=" font-weight:400;">.</span></p></body></html>"""
+<p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-weight:400;">Следовательно, два сорта $name статистически существенно различаются по уровню урожайности $res2 </span></p></body></html>"""
         )
         formatted_string = template.substitute(
             symbol=result[num][0],
@@ -676,7 +683,6 @@ p, li { white-space: pre-wrap; }
 
         lst = []
         types_matrix = []
-        summ = 0
         for i in range(self.parent.table_loader1.m):
             data = self.parent.calculation.lst.copy()
             lst.append([
@@ -698,7 +704,6 @@ p, li { white-space: pre-wrap; }
         )
         types_matrix.append([str, str, str, int, float, float])
 
-        filter_table_results_1 = lambda dct: round(dct['value'], 3)
 
         loader_results_1_n = self.parent.table_loader1.n + 3
         loader_results_1_m = self.parent.table_loader1.m + 1
@@ -706,10 +711,14 @@ p, li { white-space: pre-wrap; }
         types_matrix_results_1 = types_matrix
         loader_results_1_block = True
         loader_results_1_heading_x = lambda iterator: \
-            ["Урожайность, ц/га\nНачало промежутка", "Урожайность, ц/га\nКонец промежутка",
-             f"Площадь N{get_sub('i')}, га", "Середина интервала",
-             f"y{get_sub('i')} * n{get_sub('i')}",
-             f"(y{get_sub('i')} - x{get_sub('v')}){get_super('2')} * n{get_sub('i')}"][iterator]
+            [
+                "Годы",
+                f"Урожайность, ц/га\n1сорт, y{get_sub('i')}",
+                f"Урожайность, ц/га\n2сорт, x{get_sub('i')}",
+                f"Разность\nd{get_sub('i')}=x{get_sub('i')}-y{get_sub('i')}",
+                f"d{get_sub('i')}-d_ср",
+                f"(d{get_sub('i')}-d_ср){get_super('2')}",
+            ][iterator]
         loader_results_1_heading_y = lambda iterator: \
             ([str(i + 1) for i in range(self.parent.table_loader1.m)] + ["Сумма"])[
                 iterator]
@@ -756,9 +765,10 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(900, 300)
-        MainWindow.setMinimumSize(QtCore.QSize(900, 300))
-        MainWindow.setMaximumSize(QtCore.QSize(900, 300))
+        MainWindow.resize(900, 350)
+        MainWindow.setMinimumSize(QtCore.QSize(900, 350))
+        MainWindow.setMaximumSize(QtCore.QSize(900, 350))
+        MainWindow.setDocumentMode(False)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.gridLayout_2 = QtWidgets.QGridLayout(self.centralwidget)
@@ -769,16 +779,6 @@ class Ui_MainWindow(object):
         self.gridLayout_4.setObjectName("gridLayout_4")
         self.gridLayout_10 = QtWidgets.QGridLayout()
         self.gridLayout_10.setObjectName("gridLayout_10")
-        self.label_50 = QtWidgets.QLabel(self.centralwidget)
-        self.label_50.setMinimumSize(QtCore.QSize(60, 0))
-        self.label_50.setMaximumSize(QtCore.QSize(60, 16777215))
-        font = QtGui.QFont()
-        font.setFamily("Times New Roman")
-        font.setPointSize(14)
-        font.setItalic(True)
-        self.label_50.setFont(font)
-        self.label_50.setObjectName("label_50")
-        self.gridLayout_10.addWidget(self.label_50, 0, 2, 1, 1)
         self.label_51 = QtWidgets.QLabel(self.centralwidget)
         self.label_51.setMinimumSize(QtCore.QSize(35, 0))
         self.label_51.setMaximumSize(QtCore.QSize(35, 16777215))
@@ -806,7 +806,7 @@ class Ui_MainWindow(object):
         self.lineEdit.setObjectName("lineEdit")
         self.gridLayout_10.addWidget(self.lineEdit, 0, 4, 1, 1)
         self.label_39 = QtWidgets.QLabel(self.centralwidget)
-        self.label_39.setMinimumSize(QtCore.QSize(400, 35))
+        self.label_39.setMinimumSize(QtCore.QSize(400, 0))
         self.label_39.setMaximumSize(QtCore.QSize(16777215, 16777215))
         font = QtGui.QFont()
         font.setFamily("Times New Roman")
@@ -814,11 +814,21 @@ class Ui_MainWindow(object):
         self.label_39.setFont(font)
         self.label_39.setObjectName("label_39")
         self.gridLayout_10.addWidget(self.label_39, 0, 0, 1, 1)
+        self.label_50 = QtWidgets.QLabel(self.centralwidget)
+        self.label_50.setMinimumSize(QtCore.QSize(60, 0))
+        self.label_50.setMaximumSize(QtCore.QSize(60, 16777215))
+        font = QtGui.QFont()
+        font.setFamily("Times New Roman")
+        font.setPointSize(14)
+        font.setItalic(True)
+        self.label_50.setFont(font)
+        self.label_50.setObjectName("label_50")
+        self.gridLayout_10.addWidget(self.label_50, 0, 1, 1, 1)
         self.gridLayout_4.addLayout(self.gridLayout_10, 0, 0, 1, 1)
         self.gridLayout_11 = QtWidgets.QGridLayout()
         self.gridLayout_11.setObjectName("gridLayout_11")
         self.label_40 = QtWidgets.QLabel(self.centralwidget)
-        self.label_40.setMinimumSize(QtCore.QSize(400, 35))
+        self.label_40.setMinimumSize(QtCore.QSize(400, 0))
         self.label_40.setMaximumSize(QtCore.QSize(16777215, 16777215))
         font = QtGui.QFont()
         font.setFamily("Times New Roman")
@@ -881,7 +891,7 @@ class Ui_MainWindow(object):
         self.gridLayout_12 = QtWidgets.QGridLayout()
         self.gridLayout_12.setObjectName("gridLayout_12")
         self.label_41 = QtWidgets.QLabel(self.centralwidget)
-        self.label_41.setMinimumSize(QtCore.QSize(400, 35))
+        self.label_41.setMinimumSize(QtCore.QSize(400, 0))
         self.label_41.setMaximumSize(QtCore.QSize(16777215, 16777215))
         font = QtGui.QFont()
         font.setFamily("Times New Roman")
@@ -940,6 +950,16 @@ class Ui_MainWindow(object):
         self.gridLayout.addWidget(self.label_58, 0, 4, 1, 1)
         self.gridLayout.setColumnStretch(4, 1)
         self.gridLayout_2.addLayout(self.gridLayout, 2, 0, 1, 1)
+        self.label_42 = QtWidgets.QLabel(self.centralwidget)
+        self.label_42.setMinimumSize(QtCore.QSize(400, 0))
+        self.label_42.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        font = QtGui.QFont()
+        font.setFamily("Times New Roman")
+        font.setPointSize(12)
+        self.label_42.setFont(font)
+        self.label_42.setWordWrap(True)
+        self.label_42.setObjectName("label_42")
+        self.gridLayout_2.addWidget(self.label_42, 3, 0, 1, 1)
         self.gridLayout_14 = QtWidgets.QGridLayout()
         self.gridLayout_14.setObjectName("gridLayout_14")
         self.label_13 = QtWidgets.QLabel(self.centralwidget)
@@ -962,7 +982,7 @@ class Ui_MainWindow(object):
         self.pushButton_8.setFont(font)
         self.pushButton_8.setObjectName("pushButton_8")
         self.gridLayout_14.addWidget(self.pushButton_8, 0, 0, 1, 1)
-        self.gridLayout_2.addLayout(self.gridLayout_14, 3, 0, 1, 1)
+        self.gridLayout_2.addLayout(self.gridLayout_14, 4, 0, 1, 1)
         self.gridLayout_3 = QtWidgets.QGridLayout()
         self.gridLayout_3.setObjectName("gridLayout_3")
         self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
@@ -973,12 +993,13 @@ class Ui_MainWindow(object):
         self.pushButton_3.setFont(font)
         self.pushButton_3.setObjectName("pushButton_3")
         self.gridLayout_3.addWidget(self.pushButton_3, 0, 0, 1, 1)
-        self.gridLayout_2.addLayout(self.gridLayout_3, 4, 0, 1, 1)
+        self.gridLayout_2.addLayout(self.gridLayout_3, 5, 0, 1, 1)
         self.gridLayout_2.setRowStretch(0, 2)
         self.gridLayout_2.setRowStretch(1, 1)
         self.gridLayout_2.setRowStretch(2, 1)
         self.gridLayout_2.setRowStretch(3, 1)
         self.gridLayout_2.setRowStretch(4, 1)
+        self.gridLayout_2.setRowStretch(5, 1)
         MainWindow.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
         self.statusbar.setObjectName("statusbar")
@@ -990,10 +1011,10 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Проверка гипотезы о существовании различий урожайности двух сортов некоторой культуры "))
-        self.label_50.setText(_translate("MainWindow", "<html><head/><body><p/></body></html>"))
         self.label_51.setText(_translate("MainWindow", "<html><head/><body><p/></body></html>"))
         self.label_49.setText(_translate("MainWindow", "<html><head/><body><p/></body></html>"))
         self.label_39.setText(_translate("MainWindow", "<html><head/><body><p>Введите наименование культуры:</p></body></html>"))
+        self.label_50.setText(_translate("MainWindow", "<html><head/><body><p/></body></html>"))
         self.label_40.setText(_translate("MainWindow", "<html><head/><body><p>Введите уровень значимости:</p></body></html>"))
         self.label_46.setText(_translate("MainWindow", "<html><head/><body><p>=</p></body></html>"))
         self.label_47.setText(_translate("MainWindow", "<html><head/><body><p/></body></html>"))
@@ -1002,6 +1023,11 @@ class Ui_MainWindow(object):
         self.label_55.setText(_translate("MainWindow", "<html><head/><body><p>n</p></body></html>"))
         self.label_56.setText(_translate("MainWindow", "<html><head/><body><p>=</p></body></html>"))
         self.label_57.setText(_translate("MainWindow", "<html><head/><body><p/></body></html>"))
+        self.label_42.setText(_translate("MainWindow", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
+"p, li { white-space: pre-wrap; }\n"
+"</style></head><body style=\" font-family:\'Times New Roman\'; font-size:12pt; font-weight:400; font-style:normal;\">\n"
+"<p style=\" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'MS Shell Dlg 2\';\">Выдвигаем нулевую гипотезу H</span><span style=\" font-family:\'MS Shell Dlg 2\'; vertical-align:sub;\">0</span><span style=\" font-family:\'MS Shell Dlg 2\';\"> средняя величина различий в урожайности культуры равна нулю, т.е. Н</span><span style=\" font-family:\'MS Shell Dlg 2\'; vertical-align:sub;\">0</span><span style=\" font-family:\'MS Shell Dlg 2\';\">: </span><span style=\" font-family:\'MS Shell Dlg 2\'; font-style:italic; text-decoration: overline;\">x-y=0</span><span style=\" font-family:\'MS Shell Dlg 2\';\"> при H</span><span style=\" font-family:\'MS Shell Dlg 2\'; vertical-align:sub;\">1</span><span style=\" font-family:\'MS Shell Dlg 2\';\">: </span><span style=\" font-family:\'MS Shell Dlg 2\'; font-style:italic; text-decoration: overline;\">x-y≠0</span><span style=\" font-family:\'MS Shell Dlg 2\';\">.</span></p></body></html>"))
         self.pushButton_8.setText(_translate("MainWindow", "Заполните исходную таблицу"))
         self.pushButton_3.setText(_translate("MainWindow", "Результат"))
 

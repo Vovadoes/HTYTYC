@@ -4,6 +4,7 @@ import pickle
 
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
+from PyQt5.QtWidgets import QLabel
 
 from files.MainWindow import Ui_MainWindow
 from files.ResultWindow import Ui_Form
@@ -75,7 +76,13 @@ class mywindow(QtWidgets.QMainWindow):
             [2022, 48, 55],
             [2023, 52, 59]]
         loader1_block = False
-        loader1_heading_x = lambda iterator: ["", "", ""][iterator]
+        loader1_heading_x = lambda iterator: \
+            [
+                "Годы",
+                f"Урожайность, ц/га\n1сорт, y{get_sub('i')}",
+                f"Урожайность, ц/га\n2сорт, x{get_sub('i')}"
+            ][iterator]
+        loader1_heading_y = lambda iterator: str(iterator + 1)
         loader1_types_matrix = [[int, int, int] for _ in range(loader1_m)]
 
         # loader2_n = self.variables.n
@@ -89,6 +96,7 @@ class mywindow(QtWidgets.QMainWindow):
             self, loader1_n, loader1_m, loader1_label,
             block=loader1_block,
             heading_x=loader1_heading_x,
+            heading_y=loader1_heading_y,
             types_matrix=loader1_types_matrix
         )
         # self.table_loader2 = TableLoader(
@@ -186,8 +194,7 @@ p, li { white-space: pre-wrap; }
 </style></head><body style=" font-family:'Times New Roman'; font-size:14pt; font-weight:600; font-style:normal;">
 <p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-weight:400;">Проверку гипотезы H</span><span style=" font-weight:400; vertical-align:sub;">0</span><span style=" font-weight:400;"> осуществляют с помощью критерия t-Стьюдента.</span></p>
 <p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-weight:400;">Так как t</span><span style=" font-weight:400; vertical-align:sub;">набл</span><span style=" font-weight:400;"> $symbol t</span><span style=" font-weight:400; vertical-align:sub;">кр</span><span style=" font-weight:400;">, то нулевая гипотеза $res1 </span></p>
-<p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-weight:400;">Следовательно, два сорта $name статистически существенно различаются по уровню урожайности $res2 </span></p>
-<p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-weight:400;">Выдвигаем нулевую гипотезу H</span><span style=" font-weight:400; vertical-align:sub;">0</span><span style=" font-weight:400;"> средняя величина различий в урожайности культуры равна нулю, т.е. Н</span><span style=" font-weight:400; vertical-align:sub;">0</span><span style=" font-weight:400;">: </span><span style=" font-weight:400; font-style:italic; text-decoration: overline;">x-y=0</span><span style=" font-weight:400;"> при H</span><span style=" font-weight:400; vertical-align:sub;">1</span><span style=" font-weight:400;">: </span><span style=" font-weight:400; font-style:italic; text-decoration: overline;">x-y≠0</span><span style=" font-weight:400;">.</span></p></body></html>"""
+<p style=" margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"><span style=" font-weight:400;">Следовательно, два сорта $name статистически существенно различаются по уровню урожайности $res2 </span></p></body></html>"""
         )
         formatted_string = template.substitute(
             symbol=result[num][0],
@@ -205,7 +212,6 @@ p, li { white-space: pre-wrap; }
 
         lst = []
         types_matrix = []
-        summ = 0
         for i in range(self.parent.table_loader1.m):
             data = self.parent.calculation.lst.copy()
             lst.append([
@@ -227,7 +233,7 @@ p, li { white-space: pre-wrap; }
         )
         types_matrix.append([str, str, str, int, float, float])
 
-        filter_table_results_1 = lambda dct: round(dct['value'], 3)
+        # filter_table_results_1 = lambda dct: round(dct['value'], 3)
 
         loader_results_1_n = self.parent.table_loader1.n + 3
         loader_results_1_m = self.parent.table_loader1.m + 1
@@ -235,10 +241,14 @@ p, li { white-space: pre-wrap; }
         types_matrix_results_1 = types_matrix
         loader_results_1_block = True
         loader_results_1_heading_x = lambda iterator: \
-            ["Урожайность, ц/га\nНачало промежутка", "Урожайность, ц/га\nКонец промежутка",
-             f"Площадь N{get_sub('i')}, га", "Середина интервала",
-             f"y{get_sub('i')} * n{get_sub('i')}",
-             f"(y{get_sub('i')} - x{get_sub('v')}){get_super('2')} * n{get_sub('i')}"][iterator]
+            [
+                "Годы",
+                f"Урожайность, ц/га\n1сорт, y{get_sub('i')}",
+                f"Урожайность, ц/га\n2сорт, x{get_sub('i')}",
+                f"Разность\nd{get_sub('i')}=x{get_sub('i')}-y{get_sub('i')}",
+                f"d{get_sub('i')}-d_ср",
+                f"(d{get_sub('i')}-d_ср){get_super('2')}",
+            ][iterator]
         loader_results_1_heading_y = lambda iterator: \
             ([str(i + 1) for i in range(self.parent.table_loader1.m)] + ["Сумма"])[
                 iterator]
