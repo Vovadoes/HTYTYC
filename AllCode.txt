@@ -576,8 +576,8 @@ class mywindow(QtWidgets.QMainWindow):
         loader1_heading_x = lambda iterator: \
             [
                 "Годы",
-                f"Урожайность, ц/га\n1сорт, y{get_sub('i')}",
-                f"Урожайность, ц/га\n2сорт, x{get_sub('i')}"
+                f"Урожайность, ц/га\n1 сорт, y{get_sub('i')}",
+                f"Урожайность, ц/га\n2 сорт, x{get_sub('i')}"
             ][iterator]
         loader1_heading_y = lambda iterator: str(iterator + 1)
         loader1_types_matrix = [[int, int, int] for _ in range(loader1_m)]
@@ -713,8 +713,8 @@ p, li { white-space: pre-wrap; }
         loader_results_1_heading_x = lambda iterator: \
             [
                 "Годы",
-                f"Урожайность, ц/га\n1сорт, y{get_sub('i')}",
-                f"Урожайность, ц/га\n2сорт, x{get_sub('i')}",
+                f"Урожайность, ц/га\n1 сорт, y{get_sub('i')}",
+                f"Урожайность, ц/га\n2 сорт, x{get_sub('i')}",
                 f"Разность\nd{get_sub('i')}=x{get_sub('i')}-y{get_sub('i')}",
                 f"d{get_sub('i')}-d_ср",
                 f"(d{get_sub('i')}-d_ср){get_super('2')}",
